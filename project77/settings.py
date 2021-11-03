@@ -28,7 +28,7 @@ SECRET_KEY = 'h^ge5(f&l!q8(_m31wctb5^r52vwdo#*6bztgjewx6^h$f2ui$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['shankar.com','127.0.0.1']
+ALLOWED_HOSTS = ['djngoapp11.herokuapp.com','127.0.0.1']
 
 
 # Application definition
