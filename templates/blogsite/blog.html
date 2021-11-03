@@ -1,0 +1,66 @@
+{% extends "blogsite/base.html" %}
+{%load static%}
+{%block title%} blog{%endblock title%}
+{%block blogactive%} active{%endblock blogactive%}
+
+{%block body%}
+
+{%csrf_token%}
+<H1>This is blog</H1>
+
+  {% for post in all_post %}
+  
+  <div class="card d-inline-flex mx-3" style="width: 18rem; height: 18rem;">
+    <img src="{{ post.Image.url }}" class="card-img-top" alt="..." height="250" width="250">
+    <div class="card-body">
+      <h5 class="card-title">{{post.title}}</h5>
+      <p class="card-text">{{post.content | truncatechars:160}}</p>
+      <span>{{post.timeslap}}</span>
+      <a href="{% url 'details' post.slug %}" class="btn btn-primary">see more...</a>
+    </div>
+    </div>
+    {%endfor%}
+
+  <!-- This is for pagentiona  -->
+ <nav aria-label="Page navigation example">
+  <ul class="pagination content-center">
+    {% if prev %}
+    <li class="page-item"><a class="page-link" href="\blog/?page={{prev}}">Previous</a></li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+    {%endif%}
+    <!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li> -->
+    {% if nxt %}
+    <li class="page-item"><a class="page-link" href="\blog/?page={{nxt}}">Next</a></li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+    {% endif %}
+  </ul>
+</nav>
+   <!-- Load Facebook SDK for JavaScript -->
+<div id="fb-root"></div>
+<script>
+window.fbAsyncInit = function() {
+  FB.init({
+    xfbml            : true,
+    version          : 'v12.0'
+  });
+};
+
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<!-- Your Chat Plugin code -->
+<div class="fb-customerchat"
+  attribution="install_email"
+  attribution_version="biz_inbox"
+  page_id="103745378377576">
+</div>
+{%endblock body%}

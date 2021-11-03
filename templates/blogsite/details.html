@@ -1,0 +1,105 @@
+{% extends "blogsite/base.html" %}
+{%load static%}
+{%block title%} blog{%endblock title%}
+<!-- {%block blogactive%} active{%endblock blogactive%} -->
+
+{%block body%}
+{%load extras%}
+{%load humanize%}
+
+<div class="card">
+
+  <div class="card-body">
+
+    <h5 class="card-title">{{ post_details.title }}</h5>
+    <span>{{ post_details.timeslap}}</span>
+    <span>{{ post_details.author }}</span>
+    <p class="card-text">{{ post_details.content }}</p>
+    <img src="{{ post_details.Image.url }}" class="card-img-top" alt="{{post_details.slug}}" >
+
+  </div>
+</div>
+
+
+
+{% if user.is_authenticated %}
+<form method="post" action="{% url 'new_comment' %}">
+  {% csrf_token %}
+  <div class="form-group">
+    <input type="text" name="comment" class="form-control" id="comment">
+    <input type="hidden" name="parentsno" value="">
+
+    <input type="hidden" name="post_sno" id="post_sno" value="{{post_details.sno}}">
+    <button class="btn btn-info" type="submit">Add comment <i class="fas fa-comments"></i></button>
+  </div>
+</form>
+{% else %}
+<button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  Log in
+</button>
+<button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Sign Up
+</button><br>
+{% endif %}
+
+{% for comment in comments %}
+<div class="container" >
+
+  <div class="user ">{{comment.user.username}} &nbsp; ({{comment.created_on | naturaltime }})</div>
+  <div class="comment">{{comment.comment}}</div>
+  <!-- <a href="/reply">reply</a> -->
+  
+  <p>
+    <a class="btn btn-primary" data-bs-toggle="collapse" href="#replyid{{comment.sno}}" role="button"
+      aria-expanded="false" aria-controls="collapseExample">
+      reply
+    </a>
+
+  </p>
+  
+  <div class="collapse " id="replyid{{comment.sno}}">
+    <div class="card card-body ">
+      <!-- for reply -->
+      <form method="post" action="{% url 'new_comment' %}">
+        {% csrf_token %}
+        <div class="form-group ">
+          <input type="text" name="comment" class="form-control" id="comment">
+          <input type="hidden" name="parentsno" value="{{ comment.sno}}">
+          <input type="hidden" name="post_sno" id="post_sno" value="{{post_details.sno}}">
+          <button class="btn btn-info" type="submit">Submit <i class="fas fa-comments"></i></button>
+        </div>
+      </form>
+    
+
+    </div>
+  </div>
+  <div class="replies" >
+  {% for reply in replyDict|get_val:comment.sno %}
+  {{reply}}
+  <br>
+   <div class="user">{{reply.user.username}}</div>
+  <div class="comment">{{reply.comment}}<b>{{reply.created_on | naturaltime }}</b></div>
+  {% endfor %}
+  </div>
+</div>
+
+
+{% endfor %}
+
+</div>
+
+
+
+<!-- <div> -->
+<!-- <div class="card-body">
+        <h3>Leave a comment</h3>
+        <form method="post" action="{% url 'new_comment' %}" style="margin-top: 1.3em;">{% csrf_token %}
+          <input type="text" name="comment" id="comment">
+          <input type="hidden" name="post_sno" id="post_sno" value="{{post_details.sno}}">
+  
+          <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+        </form>
+        
+      </div> -->
+
+{%endblock body%}
